@@ -117,8 +117,11 @@ voice are free. Claude Code runs on your existing plan, on your PC.
 
 The web app needs the phone in your hand to start. The small Android app in the `android` folder
 doesn't: tap your glasses once, talk, and the answer plays in your glasses while the phone stays
-locked in your pocket. Build it once with Android Studio and paste your phone link into it
-(web app Settings > Copy phone link). Step-by-step: `android\README.md`.
+locked in your pocket. On your phone, download
+[GlassesClaude.apk](https://github.com/arshit09/GlassCode/releases/latest/download/GlassesClaude.apk)
+from the [latest release](https://github.com/arshit09/GlassCode/releases/latest) and install it (or build it
+yourself with Android Studio), then paste your phone link into it (web app Settings > Copy phone link).
+Step-by-step: `android\README.md`.
 
 ## Record now, run later
 

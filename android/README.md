@@ -15,6 +15,14 @@ It uses the same relay and phone key as the GlassesClaude web app, so set up awa
 
 ## Install it (once)
 
+**Easiest:** on your phone, open
+[GlassesClaude.apk](https://github.com/arshit09/GlassCode/releases/latest/download/GlassesClaude.apk)
+(from the [latest release](https://github.com/arshit09/GlassCode/releases/latest)), open the downloaded file
+and tap **Install**. If Android asks, allow your browser (or Files app) to install apps. Google Play Protect
+may warn you because the app isn't from the Play Store; choose to install anyway.
+
+### Or build it yourself
+
 You need Android Studio on your PC and a USB cable for your phone.
 
 1. **Turn on USB debugging on the phone.** Settings > About phone > Software information > tap

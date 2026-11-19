@@ -26,7 +26,7 @@ Your PC never opens a port to the internet: it only reaches out to your relay.
 | Claude Code, signed in | Does the actual work | Your Claude plan |
 | A free Cloudflare account | Hosts your private relay | Free (100,000 requests a day) |
 | An Android phone | Runs the tap-to-talk app | Free |
-| Android Studio on the PC (once) | Installs the app on your phone | Free |
+| Android Studio (optional) | Only if you want to build the app yourself | Free |
 | The free ntfy app | "Claude finished" notifications | Free |
 
 ## Part 1: Set up the PC
@@ -52,11 +52,10 @@ Your PC never opens a port to the internet: it only reaches out to your relay.
 
 ## Part 4: Install the tap-to-talk Android app
 
-1. **Turn on USB debugging.** Settings > About phone > Software information > tap **Build number** 7 times. Then Settings > Developer options > turn on **USB debugging**.
-2. **Install the app.** In Android Studio choose File > Open > `C:\GlassesClaude\android` and wait for the first sync. Plug in your phone, allow USB debugging, pick your phone at the top and press **Run** (the green triangle).
-3. **Connect it.** In the GlassesClaude Android app tap **Paste and save**, then **Check my PC**: it should say your PC is online.
-4. **Start it.** Tap **Start** and allow the microphone, notifications and nearby devices. Tap **Allow running in the background**. On Samsung, set Settings > Apps > GlassesClaude > Battery to **Unrestricted**.
-5. **Unplug.** Unplug the phone first, then close Android Studio. The app stays installed and keeps running.
+1. **Install the app.** On your phone, open [GlassesClaude.apk](https://github.com/arshit09/GlassCode/releases/latest/download/GlassesClaude.apk) and let it download. Open the downloaded file and tap **Install**. If Android asks, allow your browser (or Files app) to install apps. The app isn't from the Play Store, so Google Play Protect may warn you; choose to install anyway. Every line of its code is in the `android` folder.
+   - Prefer to build it yourself? Follow "Or build it yourself" in `C:\GlassesClaude\android\README.md`.
+2. **Connect it.** In the GlassesClaude Android app tap **Paste and save**, then **Check my PC**: it should say your PC is online.
+3. **Start it.** Tap **Start** and allow the microphone, notifications and nearby devices. Tap **Allow running in the background**. On Samsung, set Settings > Apps > GlassesClaude > Battery to **Unrestricted**.
 
 ## Part 5: Try it
 
