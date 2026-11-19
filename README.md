@@ -8,6 +8,11 @@ Everything is free except Claude Code itself, which runs on the Claude plan you 
 tested on Windows with Rokid AI glasses and an Android phone. The app in this repo is called
 **GlassesClaude**.
 
+- **See it in action:** [my Instagram reel](https://www.instagram.com/p/Df2IEjozdMw/)
+- **The glasses I use:** [Rokid AI Glasses Style](https://global.rokid.com/products/rokid-ai-glasses-style)
+  (no display: mic, speakers, touch pad and camera). Other glasses that pair with your phone like
+  Bluetooth headphones may work too, but only these were tested.
+
 ## Behind the scenes
 
 ![Behind the scenes: one request travels from the Rokid glasses to the phone app, a Cloudflare Worker and Durable Object, the home PC running Claude Code, and back to the glasses through ntfy](docs/behind-the-scenes.png)
