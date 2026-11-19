@@ -1,0 +1,46 @@
+# ---- Created on your PC by "1 - Install" / "2 - Start" / "3 - Set up away mode" ----
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Speech model, recordings, spoken answers, state AND your private keys (data\away.json)
+data/
+
+# Everything you said + every answer
+logs/
+
+# Voice memos you drop in, and their results (the README stays)
+inbox/*
+!inbox/README.txt
+
+# Claude's practice folder: whatever Claude builds there stays on your PC (the README stays)
+workspace/*
+!workspace/README.txt
+
+# ADB downloaded by the optional tools
+tools/platform-tools/
+
+# ---- Cloudflare relay ----
+relay/.wrangler/
+relay/node_modules/
+relay/.dev.vars
+
+# ---- Android ----
+android/.gradle/
+android/.idea/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+*.apk
+*.aab
+*.iml
+
+# ---- Editors / OS ----
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store

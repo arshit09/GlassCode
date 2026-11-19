@@ -1,0 +1,5 @@
+// Top-level build file: only picks the Android Gradle Plugin version.
+// If Android Studio offers to upgrade it, saying yes is fine.
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}

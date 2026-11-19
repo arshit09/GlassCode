@@ -1,0 +1,24 @@
+# GlassesClaude relay - deployed for free to your own Cloudflare account by
+# "3 - Set up away mode". You normally never edit this file.
+name = "glassesclaude-relay"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"
+
+# The phone app (index.html ...) is served straight from this folder.
+[assets]
+directory = "./public"
+
+# One small SQLite-backed Durable Object stores requests and answers (free plan).
+[[durable_objects.bindings]]
+name = "MAILBOX"
+class_name = "Mailbox"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Mailbox"]
+
+[vars]
+# "no" = notifications only say "tap to hear the answer" (the answer text stays off ntfy.sh)
+NTFY_INCLUDE_ANSWER = "yes"
+# Requests that wait longer than this (PC off) are not run later
+QUEUE_MAX_MINUTES = "120"

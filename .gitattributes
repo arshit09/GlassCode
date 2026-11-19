@@ -1,0 +1,15 @@
+# Normalise text files in the repo
+* text=auto
+
+# Windows scripts must keep CRLF, or cmd.exe can misread them (also in GitHub's "Download ZIP")
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# The Gradle wrapper for macOS/Linux needs LF
+gradlew text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jar binary

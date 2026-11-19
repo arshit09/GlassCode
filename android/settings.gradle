@@ -1,0 +1,17 @@
+// Where Gradle finds the Android build plugin (Google's repository) and libraries.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "GlassesClaudePhone"
+include ":app"

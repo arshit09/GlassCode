@@ -1,0 +1,32 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    // The app's internal name. Also its id on your phone.
+    namespace 'com.glassesclaude.phone'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.glassesclaude.phone'
+        minSdk 26          // Android 8.0 and newer
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// No extra libraries: everything uses the phone's built-in Android APIs.
+dependencies {
+}

@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#13233a">
+<title>GlassesClaude</title>
+<style>
+  /* Colours: light and dark follow the phone / PC setting automatically. */
+  :root {
+    --bg: #eef2f5; --panel: #ffffff; --ink: #13233a; --muted: #56677c; --line: #c9d3de;
+    --accent: #0e8a8c; --accent-ink: #ffffff; --you: #dff1f1; --claude: #ffffff; --bad: #b4412c; --work: #b97a12;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #13233a; --panel: #1a2d47; --ink: #e8eef5; --muted: #a2b3c7; --line: #2e4462;
+      --accent: #3cc4c1; --accent-ink: #0f1d30; --you: #18414a; --claude: #1a2d47; --bad: #f08a76; --work: #f0b44c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 16px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    background: var(--bg); color: var(--ink);
+    display: flex; flex-direction: column; max-width: 720px; margin: 0 auto;
+  }
+  header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 8px; }
+  header h1 { font: 600 20px/1.2 Bahnschrift, "DIN Alternate", "Roboto Condensed", sans-serif; margin: 0; }
+  .pill { margin-left: auto; font-size: 13px; color: var(--muted); border: 1px solid var(--line);
+          border-radius: 999px; padding: 3px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
+  .pill.busy { color: var(--work); border-color: var(--work); }
+  #notice { margin: 0 16px; padding: 10px 12px; border-radius: 10px; background: var(--panel);
+            border: 1px solid var(--bad); color: var(--bad); font-size: 14px; display: none; }
+  #log { flex: 1; overflow-y: auto; padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .empty { color: var(--muted); text-align: center; margin: auto; max-width: 420px; font-size: 15px; }
+  .turn { max-width: 88%; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); white-space: pre-wrap; word-wrap: break-word; }
+  .turn.you { align-self: flex-end; background: var(--you); border-bottom-right-radius: 4px; }
+  .turn.claude { align-self: flex-start; background: var(--claude); border-bottom-left-radius: 4px; }
+  .turn .who { display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  .turn.working .txt { color: var(--muted); font-style: italic; }
+  .turn.error .txt { color: var(--bad); }
+  footer { padding: 10px 16px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--bg); }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .center { justify-content: center; }
+  #talk {
+    width: 116px; height: 116px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink); font-size: 15px; font-weight: 600;
+    display: grid; place-items: center; margin: 4px auto 10px; box-shadow: 0 6px 20px rgba(0,0,0,.18);
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  #talk svg { width: 34px; height: 34px; display: block; margin: 0 auto 4px; }
+  #talk[aria-pressed="true"] { animation: pulse 1.1s ease-in-out infinite; }
+  #talk:disabled { opacity: .45; cursor: not-allowed; animation: none; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(14,138,140,.55); } 50% { box-shadow: 0 0 0 18px rgba(14,138,140,0); } }
+  #hint { text-align: center; color: var(--muted); font-size: 13px; min-height: 18px; margin-bottom: 8px; }
+  button.small { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px;
+                 padding: 8px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+  form { margin-top: 8px; }
+  input[type=text], select { flex: 1; min-width: 0; font: inherit; color: var(--ink); background: var(--panel);
+                              border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; }
+  select { font-size: 13px; padding: 6px 8px; }
+  label.mic { font-size: 13px; color: var(--muted); white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GlassesClaude</h1>
+  <span id="pill" class="pill">connecting...</span>
+</header>
+<div id="notice" role="alert"></div>
+
+<main id="log" aria-live="polite">
+  <p class="empty" id="empty">Tap the round button and talk. Pause when you're done.<br>
+  You'll hear "Got it" and then Claude's answer, through your glasses if they're connected to this device.</p>
+</main>
+
+<footer>
+  <button id="talk" aria-pressed="false" aria-label="Tap to talk">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg><span id="talkText">Tap to talk</span></span>
+  </button>
+  <div id="hint"></div>
+  <div class="row center">
+    <button class="small" id="stop" type="button">Stop</button>
+    <button class="small" id="repeat" type="button">Repeat</button>
+    <button class="small" id="newchat" type="button">New chat</button>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <label class="mic" for="mic">Mic</label>
+    <select id="mic"><option value="">Default microphone</option></select>
+  </div>
+  <form id="typeForm" class="row" autocomplete="off">
+    <input id="typed" type="text" placeholder="...or type a command" aria-label="Type a command">
+    <button class="small" type="submit">Send</button>
+  </form>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const FINAL = ["done", "error", "cancelled", "note"];
+  const WORDS = { listening: "Understanding what you said...", queued: "Waiting for my turn...",
+                  working: "Claude is working on it...", speaking: "Preparing the answer..." };
+
+  // ---- small helpers -----------------------------------------------------
+  const store = {   // localStorage can be unavailable (private mode): never crash
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  function notice(msg) { const n = $("notice"); n.textContent = msg || ""; n.style.display = msg ? "block" : "none"; }
+  function hint(msg) { $("hint").textContent = msg || ""; }
+
+  // ---- the secret key comes from the link (#key=...) ---------------------
+  let key = null;
+  const m = location.hash.match(/key=([A-Za-z0-9_\-]+)/);
+  if (m) { key = m[1]; store.set("gc_key", key); history.replaceState(null, "", location.pathname); }
+  else { key = store.get("gc_key"); }
+  if (!key) notice("Open this page with the link shown in the GlassesClaude window (it contains your key).");
+
+  async function api(path, opts = {}) {
+    const headers = Object.assign({ "X-Key": key || "" }, opts.headers || {});
+    const res = await fetch(path, Object.assign({}, opts, { headers }));
+    if (res.status === 401) throw new Error("Wrong or missing key. Open the link from the GlassesClaude window again.");
+    if (res.status === 429) throw new Error("Too many wrong keys. Wait 10 minutes and try again.");
+    return res;
+  }
+
+  // ---- conversation bubbles ----------------------------------------------
+  function addTurn(who, text, state) {
+    const empty = $("empty"); if (empty) empty.remove();
+    const el = document.createElement("div");
+    el.className = "turn " + who + (state ? " " + state : "");
+    const label = document.createElement("span"); label.className = "who"; label.textContent = who === "you" ? "You" : "Claude";
+    const txt = document.createElement("span"); txt.className = "txt"; txt.textContent = text;
+    el.append(label, txt); $("log").append(el); el.scrollIntoView({ block: "end", behavior: "smooth" });
+    return {
+      set(t, s) { txt.textContent = t; el.className = "turn " + who + (s ? " " + s : ""); el.scrollIntoView({ block: "end" }); },
+    };
+  }
+
+  // ---- audio playback (one sound after another) ---------------------------
+  const player = new Audio();
+  let queue = [], playing = false, unlocked = false;
+  function silentWavUrl() {           // tiny silent sound used to "unlock" audio on phones
+    const n = 800, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+    const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    w(0, "RIFF"); v.setUint32(4, 36 + n, true); w(8, "WAVE"); w(12, "fmt ");
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 8000, true); v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+    w(36, "data"); v.setUint32(40, n, true);
+    for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([buf], { type: "audio/wav" }));
+  }
+  function unlockAudio() {
+    if (unlocked) return; unlocked = true;
+    player.src = silentWavUrl(); player.play().catch(() => { unlocked = false; });
+  }
+  function next() {
+    const url = queue.shift();
+    if (!url) { playing = false; return; }
+    playing = true; player.src = url;
+    player.play().catch(() => { playing = false; hint("Tap the page once to allow sound, then press Repeat."); });
+  }
+  player.addEventListener("ended", () => { if (player.src.startsWith("blob:")) URL.revokeObjectURL(player.src); next(); });
+  async function playJobAudio(id, kind) {
+    try {
+      const res = await api(`/api/audio/${id}/${kind}`);
+      if (!res.ok) return;
+      queue.push(URL.createObjectURL(await res.blob()));
+      if (!playing) next();
+    } catch (e) { /* the text is still shown */ }
+  }
+  function stopAudio() { queue = []; player.pause(); playing = false; }
+
+  // ---- follow a job until Claude has answered -------------------------------
+  async function follow(job, you) {
+    const reply = addTurn("claude", WORDS[job.status] || "...", "working");
+    let ackPlayed = false;
+    for (;;) {
+      await sleep(900);
+      let j;
+      try { j = (await (await api("/api/jobs/" + job.id)).json()).job; }
+      catch (e) { reply.set("Lost connection to the PC. Is the GlassesClaude window still open?", "error"); return; }
+      if (!j) { reply.set("This request was forgotten (GlassesClaude restarted?).", "error"); return; }
+      if (j.text && you) you.set(j.text);
+      if (!ackPlayed && j.has_ack && !FINAL.includes(j.status)) { ackPlayed = true; playJobAudio(j.id, "ack"); }
+      if (FINAL.includes(j.status)) {
+        reply.set(j.reply || (j.status === "note" ? "Saved as a note." : "(no answer)"), j.ok ? "" : "error");
+        if (j.has_reply_audio) playJobAudio(j.id, "reply");
+        refreshStatus();
+        return;
+      }
+      reply.set(WORDS[j.status] || "...", "working");
+    }
+  }
+
+  // ---- microphone + "stop when I pause" -----------------------------------
+  class SilenceDetector {   // same idea as the desk mode on the PC
+    constructor(silence = 1.6, max = 60, noSpeech = 6) {
+      Object.assign(this, { silence, max, noSpeech, t: 0, noise: [], th: 0.01, loud: 0, quiet: 0, started: false });
+    }
+    feed(rms, dt) {
+      this.t += dt;
+      if (this.t <= 0.3) {
+        this.noise.push(rms);
+        const s = [...this.noise].sort((a, b) => a - b), med = s[Math.floor(s.length / 2)];
+        this.th = Math.min(Math.max(0.01, med * 3), 0.08); return null;
+      }
+      if (!this.started) {
+        if (rms > this.th) { this.loud += dt; if (this.loud >= 0.12) { this.started = true; this.quiet = 0; } }
+        else this.loud = Math.max(0, this.loud - dt / 2);
+        if (!this.started && this.t >= this.noSpeech) return "no_speech";
+      } else if (rms > this.th * 0.8) this.quiet = 0;
+      else { this.quiet += dt; if (this.quiet >= this.silence) return "silence"; }
+      return this.t >= this.max ? "max" : null;
+    }
+  }
+
+  let rec = null;
+  const canRecord = !!(window.isSecureContext && navigator.mediaDevices && window.MediaRecorder);
+  if (!canRecord) {
+    $("talk").disabled = true;
+    hint("The microphone only works on a secure page: on the PC open http://localhost:8787. On a phone, use the away-mode app. Typing still works.");
+  }
+
+  function setTalking(on) {
+    $("talk").setAttribute("aria-pressed", on ? "true" : "false");
+    $("talkText").textContent = on ? "Listening..." : "Tap to talk";
+    hint(on ? "Talk now - pause when you're done (or tap again to send)." : "");
+  }
+
+  async function startRecording() {
+    unlockAudio(); stopAudio();
+    const micId = $("mic").value;
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: micId ? { deviceId: { exact: micId } } : true }); }
+    catch (e) { notice("Microphone blocked: " + e.message + ". Allow the microphone for this page and try again."); return; }
+    notice("");
+    fillMics();
+    const types = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+    const mime = types.find((t) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || "";
+    const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    const analyser = ctx.createAnalyser(); analyser.fftSize = 2048;
+    ctx.createMediaStreamSource(stream).connect(analyser);
+    const buf = new Float32Array(analyser.fftSize);
+    const det = new SilenceDetector();
+    const r = { recorder, stream, ctx, discard: false, chunks: [], timer: null };
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size) r.chunks.push(e.data); };
+    recorder.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop()); ctx.close().catch(() => {});
+      if (r.discard) { hint("I didn't hear anything. Tap and try again."); return; }
+      const type = (recorder.mimeType || mime || "audio/webm").split(";")[0];
+      sendAudio(new Blob(r.chunks, { type }), type);
+    };
+    let last = performance.now();
+    r.timer = setInterval(() => {
+      analyser.getFloatTimeDomainData(buf);
+      let sum = 0; for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+      const now = performance.now(), why = det.feed(Math.sqrt(sum / buf.length), (now - last) / 1000); last = now;
+      if (why) stopRecording(why === "no_speech");
+    }, 50);
+    recorder.start(250);
+    rec = r; setTalking(true);
+  }
+
+  function stopRecording(discard) {
+    const r = rec; if (!r) return; rec = null;
+    clearInterval(r.timer); r.discard = !!discard;
+    if (r.recorder.state !== "inactive") r.recorder.stop();
+    setTalking(false);
+  }
+
+  async function sendAudio(blob, type) {
+    const you = addTurn("you", "(voice)");
+    try {
+      const res = await api("/api/ask", { method: "POST", headers: { "Content-Type": type || "audio/webm" }, body: blob });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not send.");
+      follow(data.job, you);
+    } catch (e) { you.set("(not sent)", "error"); notice(e.message); }
+  }
+
+  $("talk").addEventListener("click", () => { rec ? stopRecording(false) : startRecording(); });
+
+  // ---- pick the glasses as microphone (if this device lists them) -----------
+  async function fillMics() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    const sel = $("mic"), saved = store.get("gc_mic") || "";
+    const mics = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === "audioinput");
+    const current = sel.value || saved;
+    sel.innerHTML = '<option value="">Default microphone</option>';
+    for (const d of mics) {
+      if (!d.deviceId || d.deviceId === "default") continue;
+      const o = document.createElement("option"); o.value = d.deviceId; o.textContent = d.label || "Microphone";
+      sel.append(o);
+    }
+    let pick = mics.find((d) => d.deviceId === current);
+    if (!pick && !saved) pick = mics.find((d) => /rokid|glass|bluetooth|headset|hands-?free/i.test(d.label || ""));
+    if (pick) sel.value = pick.deviceId;
+  }
+  $("mic").addEventListener("change", () => store.set("gc_mic", $("mic").value));
+  if (canRecord) fillMics().catch(() => {});
+
+  // ---- buttons + typing -------------------------------------------------------
+  $("stop").addEventListener("click", async () => {
+    stopAudio(); stopRecording(true);
+    try { const d = await (await api("/api/cancel", { method: "POST" })).json(); hint(d.stopped ? "Stopped." : "Nothing to stop."); }
+    catch (e) { notice(e.message); }
+  });
+  $("newchat").addEventListener("click", async () => {
+    try { const d = await (await api("/api/new-chat", { method: "POST" })).json(); addTurn("claude", d.message); }
+    catch (e) { notice(e.message); }
+  });
+  $("repeat").addEventListener("click", async () => {
+    unlockAudio();
+    try {
+      const j = (await (await api("/api/repeat", { method: "POST" })).json()).job;
+      if (j.has_reply_audio) playJobAudio(j.id, "reply"); else addTurn("claude", j.reply);
+    } catch (e) { notice(e.message); }
+  });
+  $("typeForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const text = $("typed").value.trim(); if (!text) return;
+    unlockAudio(); $("typed").value = "";
+    const you = addTurn("you", text);
+    try {
+      const res = await api("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not send.");
+      follow(data.job, null);
+    } catch (e) { you.set(text + "  (not sent)", "error"); notice(e.message); }
+  });
+
+  // ---- status pill (project + busy) ----------------------------------------------
+  async function refreshStatus() {
+    if (!key) return;
+    try {
+      const s = await (await api("/api/status")).json();
+      const pill = $("pill");
+      pill.textContent = (s.busy ? "working - " : "ready - ") + s.project + (s.waiting ? ` (+${s.waiting})` : "");
+      pill.className = "pill" + (s.busy ? " busy" : "");
+      pill.title = s.project_path;
+    } catch (e) { $("pill").textContent = "PC not reachable"; }
+  }
+  refreshStatus(); setInterval(refreshStatus, 5000);
+})();
+</script>
+</body>
+</html>

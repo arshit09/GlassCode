@@ -1,0 +1,123 @@
+# =====================================================================
+#  GlassesClaude settings
+#  Edit with Notepad, save, then close and reopen "2 - Start".
+#  Lines starting with # are notes and are ignored.
+#  Folder paths go in SINGLE quotes, like: 'C:\Users\you\Projects\my-app'
+# =====================================================================
+
+# The folder Claude Code works in (your project).
+# Leave it empty to use the safe practice folder "workspace" inside GlassesClaude.
+project_folder = ''
+
+# Optional: more projects you can switch to by voice.
+# Say "switch to portfolio" and Claude starts working in that folder.
+# Say "switch to workspace" to go back to project_folder above.
+[projects]
+# portfolio = 'C:\Users\you\Projects\my-portfolio'
+# rithere   = 'C:\Users\you\Projects\rithere'
+
+
+[claude]
+# How much Claude may do on its own. Nobody can click "Allow" while you are
+# only talking, so pick the level you are comfortable with:
+#   "auto"        = Claude does the work; a safety checker blocks risky actions (recommended)
+#   "acceptEdits" = Claude can read and edit files in the project, other commands are refused
+#   "plan"        = Claude only reads and plans; nothing is changed
+permission_mode = "auto"
+
+# Leave empty to use your normal Claude Code model. Examples: "sonnet", "opus"
+model = ""
+
+# Stop a task that runs longer than this many minutes.
+max_minutes = 15
+
+# Only if Claude Code is not found automatically: full path to claude.exe
+command = ''
+
+
+[voice_to_text]
+# Whisper model that turns your voice into text (runs on this PC):
+#   "base" = fastest   "small" = better (default)   "medium" = best but slower
+# After changing it, run "1 - Install" again to download the new model.
+model = "small"
+
+# The language you speak: "en" for English, or "" to detect it automatically.
+language = "en"
+
+# Words Whisper should expect, so tech words are spelled right.
+hint_words = "Claude, Claude Code, GitHub, npm, React, Next.js, TypeScript, JavaScript, Python, Cloudflare, README, commit, pull request, localhost, API"
+
+
+[text_to_voice]
+# Natural online voice (needs internet). Without internet the Windows voice is used.
+# Other voices: "en-US-AndrewMultilingualNeural", "en-IN-NeerjaNeural", "en-CA-LiamNeural"
+voice = "en-US-EmmaMultilingualNeural"
+speed = "+10%"
+
+# Longest answer that is read aloud (characters). The full answer is always in logs\history.md
+max_spoken_chars = 600
+
+# Say back what it heard before working ("Got it: create a readme...")
+confirm_what_i_heard = true
+
+
+[desk_mode]
+# Talk through glasses that are paired to THIS PC by Bluetooth.
+enabled = true
+
+# Key to start talking: press it once, talk, then pause. Press again to send early.
+# Examples: "ctrl+alt+space", "f8", "ctrl+shift+g"
+hotkey = "ctrl+alt+space"
+
+# Also start talking when the glasses send play/pause (a tap on the glasses), if they do.
+use_media_key = true
+
+# Part of the Bluetooth device name for the glasses' mic and speaker.
+# "" = use the Windows default devices.
+microphone = "rokid"
+speaker = "rokid"
+
+# Stop listening after this many seconds of quiet.
+silence_seconds = 1.6
+
+# Longest single recording, in seconds.
+max_record_seconds = 60
+
+
+[voice_memos]
+# Recordings you make anywhere, processed when they reach this PC.
+enabled = true
+
+# Folder to watch. Leave empty to use the "inbox" folder inside GlassesClaude.
+# Tip: use a OneDrive / Google Drive folder, e.g. 'C:\Users\you\OneDrive\GlassesMemos',
+# then share recordings to it from your phone and the results sync back to the cloud.
+folder = ''
+
+# A memo that STARTS with one of these words is a command for Claude.
+# Any other memo is simply written down as a note.
+command_words = ["claude", "hey claude", "ok claude", "okay claude"]
+
+# Read memo answers aloud on the PC when they are processed.
+speak_answers = false
+
+
+[web]
+# The talk page runs only on this PC at http://localhost:8787
+port = 8787
+
+
+[away]
+# Talk from anywhere: your phone app -> free Cloudflare relay -> this PC.
+# Set it up once with "3 - Set up away mode (optional)". Until then this does nothing.
+enabled = true
+
+# How often this PC asks the relay for new requests (seconds).
+# 5 seconds = about 17,000 checks a day, well inside Cloudflare's free 100,000 a day.
+poll_seconds = 5
+
+# Keep this PC from sleeping while GlassesClaude runs (the screen can still turn off),
+# so requests from your phone are picked up while you're out.
+keep_pc_awake = true
+
+# Put Claude's short answer inside the phone notification (false = just "tap to hear the answer").
+answer_in_notification = true

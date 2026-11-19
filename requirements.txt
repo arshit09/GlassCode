@@ -1,0 +1,7 @@
+# Python packages GlassesClaude needs ("1 - Install" installs them for you)
+faster-whisper>=1.1,<2      # voice -> text, runs on your PC (also brings PyAV for audio files)
+edge-tts>=7.0,<8            # text -> natural voice
+sounddevice>=0.5,<1         # microphone + speaker for desk mode
+numpy>=1.26,<3              # audio math
+pynput>=1.7,<2              # global hotkey (works while other apps are focused)
+qrcode>=7.4,<9              # QR code for the phone link
