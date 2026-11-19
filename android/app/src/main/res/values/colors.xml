@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Navy background of the app icon (same as the rest of GlassesClaude). -->
-    <color name="icon_background">#13233A</color>
+    <!-- Orange behind the app icon (the same orange as the icon picture, so the edges never show). -->
+    <color name="icon_background">#C75B3B</color>
 </resources>

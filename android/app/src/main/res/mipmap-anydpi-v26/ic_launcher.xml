@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- App icon: a teal microphone on navy. -->
+<!-- App icon: sunglasses on a cream sunburst, on orange.
+     The picture is drawable-nodpi/ic_launcher_foreground.png (432 x 432 px = the 108 dp layer);
+     the artwork stays inside the 66 dp safe circle, so round and square launcher shapes never cut it. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/icon_background" />
     <foreground android:drawable="@drawable/ic_launcher_foreground" />

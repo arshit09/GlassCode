@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/icon.png" width="160" alt="GlassCode app icon: black sunglasses on a cream sunburst, on an orange rounded square">
+</p>
+
 # GlassCode
 
 Talk to Claude Code through your AI glasses. You speak, your PC writes it down, Claude Code does the
